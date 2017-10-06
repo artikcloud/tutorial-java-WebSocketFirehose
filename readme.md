@@ -17,118 +17,86 @@ Consult [An IoT remote control](https://developer.artik.cloud/documentation/tuto
 
 ### Setup at ARTIK Cloud
 
-1. Go to the Devices Dashboard (https://my.artik.cloud) and [add a new device](https://developer.artik.cloud/documentation/tools/web-tools.html#connecting-a-device):
+1. At My ARTIK Cloud, [connect a device](https://my.artik.cloud/new_device/cloud.artik.example.simple_smartlight) of the type "Example Simple Smart Light" (unique type name `cloud.artik.example.simple_smartlight`). You can use the one that you already own.
 
-```
-Device Type Name: Example Simple Smart Light
-Unique Name: cloud.artik.example.simple_smartlight
-```
+
 2. Get the device ID for your newly created device in the [Device Info](https://developer.artik.cloud/documentation/tools/web-tools.html#managing-a-device-token) screen.
-3. Retrieve a [user token](https://developer.artik.cloud/documentation/tools/api-console.html#find-your-user-token) with our api-console.
+3. Retrieve a [user token](https://developer.artik.cloud/documentation/tools/api-console.html#find-your-user-token) using our api-console, or via oauth2 authentication with your own application. 
 
-Save the device ID and user token for use later.
+### Setup Java Project
 
-### Setup Project
+1. Clone this repository if you haven't already done so.
 
-#### 1. Setup project:
+2. At the root directory and run the command:
 
-1. We will use Eclipse as our IDE to load our sample code.  Import the project as a **maven project**:
+   ```
+   mvn clean package
+   ```
 
-```
-1. Select the File menu then select Import.
-2. Select Maven => Existing Maven Projects
-3. Browse and select the Root Directory to this sample code. 
-```
+   The executable `websocket-monitor-x.x.jar` is generated under the target directory.
 
-2. Or, if you do not have maven you can simply create a new Java Project:
+3. Run the command at the target directory to learn the usage:
 
-```
-1. Create a new Java Project with Eclipse.
-2. Copy the Config.java and Monitor.java file into the 'src' folder of your new Java Project.
-```
-
-3. Fill in your user token and device token obtained earlier into the 'Config.java' file
-
-```java
-public class Config {
-	public static final String DEVICE_ID = "YOUR_DEVICE_ID";
-	public static final String USER_TOKEN = "YOUR_USER_TOKEN";	
-}
-```
-
-#### 2. Install dependencies
-
-This dependencies setup is only required if you did not import the project with maven.
-
-1. Download the needed jar files:
-
-```
-1. Using your browser, search for 'artik cloud' on https://search.maven.org
-2. In the Download section, download the jar-with-dependencies.jar jar file.
-3. In Eclipse, import the jar file into your project by:
-
-```
-2. Import the downloaded jar into your new Java project:
-
-```
-1. Select Your Project in the Eclipse Package Explorer
-2. Select File => Properties => Java Build Path
-3. Click on Libraries => Add External JARs
-4. Select the .jar file you downloaded earlier.
-```
-
-#### 3. Run Project
-
-1. Select your project from the Eclipse IDE.
-2. Select `run` from the menu. 
-
-```bash
-> Status: CONNECTING ...
-< Connected!
-```
+   ```
+   java -jar websocket-monitor-x.x.jar
+   ```
 
 ## Demo:
 
-1. Send messages to your Example Simple Smart Light using the [Online Device Simulator](https://developer.artik.cloud/documentation/tools/web-tools.html#using-the-online-device-simulator).   This sample has the following settings:
+1. Start and run the following command in the target directory:
 
 ```
-* Simulate data on the boolean "state" field.  Keep the default interval to 5000 ms (5 secs).   
-* Alternative between true/false value by setting the Data Pattern to Alternating Boolean.
+java -jar websocket-monitor-x.x.jar -sdids YOUR_DEVICE_IDs -token YOUR_USER_TOKEN
 ```
 
-2. Go back to your running sample application.   The terminal screen should output a message every 5 seconds:
+2. Send messages to your Example Simple Smart Light using the [Online Device Simulator](https://developer.artik.cloud/documentation/tools/web-tools.html#using-the-online-device-simulator).   Simulate the device with following settings:
+
+```
+* Simulate data on the boolean "state" field with default 5000 ms (5 secs).   
+* Alternative between true/false value by setting the data pattern to "alternating boolean".
+```
+
+2. In your running sample application you will see the received messages.    Here is the example output:
 
 ```bash
-< Received message: class MessageOut {
+Connecting to: wss://api.artik.cloud/v1.1/live?authorization=bearer+aa176...&sdids=bb101...
+Status: CONNECTING ...
+Connection successful with code:[101]
+
+Received ping with ts:[1507328677960]
+
+Received message:[class MessageOut {
     data: {state=true}
     cid: null
     ddid: null
-    sdid: a12345...
-    ts: 1504311135000
+    sdid: bb101...
+    ts: 1507328710000
     type: message
-    mid: 920fd5dbd81f4e6b97500252138f1cfb
-    uid: b67890a ...
+    mid: ba31d3eb38e342a49226828ff1dac58d
+    uid: ff123...
     sdtid: dtd1d3e0934d9348b783166938c0380128
-    cts: 1504311135834
+    cts: 1507328699982
     mv: 1
-}
-< message.getData(): {state=true}
+}]
 
-< Received message: class MessageOut {
+Received message:[class MessageOut {
     data: {state=false}
     cid: null
     ddid: null
-    sdid: a12345...
-    ts: 1504311140000
+    sdid: bb101...
+    ts: 1507328715000
     type: message
-    mid: 8913a306bb3b4a5392288fad9a607961
-    uid: b67890a ...
+    mid: 8070d27294f04620a82b389c9e768aab
+    uid: ff123...
     sdtid: dtd1d3e0934d9348b783166938c0380128
-    cts: 1504311140606
+    cts: 1507328704710
     mv: 1
-}
-< message.getData(): {state=false}
+}]
+Received ping with ts:[1507328707969]
+
 ```
+
+3. Stop the simulation so it does not accrue any more data usage.
 
 ## More about ARTIK Cloud
 
