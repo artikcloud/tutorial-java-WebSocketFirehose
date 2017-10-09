@@ -9,6 +9,7 @@ import cloud.artik.websocket.*;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 
 /**
@@ -25,23 +26,25 @@ import java.net.URISyntaxException;
 
 public class WebSocketMonitor {
 	
-	private static final int EXPECTED_ARGUMENT_NUMBER = 4;
+	private static final int MIN_EXPECTED_ARGUMENT_NUMBER = 4;
+	
+	static ArrayList<String> queryParams = new ArrayList<String>();
 
 	// comma delimited string of `device ID` of interest
 	static String sdids = null;     
 		
 	// here we are using the `user token` with sdids.  Or use `device token` associated device ID.
 	static String accessToken = null;
-	
-	// parameters below not used in this sample and set to null
-	// used when monitoring by device type
-	static String sdtids = null;    //comma delimited string of `device type ID` of interest
-			
+		
 	// user ID associated with the access token.
 	static String uid = null;	
 	
 	// single `device ID` of interest wen
 	static String deviceId =  null;
+	
+	// parameters below not used in this sample and set to null
+	// for use when monitoring by device type
+	static String sdtids = null;    //comma delimited string of `device type ID` of interest
 	
 	
 	public static void main(String args[]) throws URISyntaxException, IOException, ApiException {
@@ -95,45 +98,50 @@ public class WebSocketMonitor {
 		});
 		
 		
-		System.out.println(String.format("Connecting to: wss://api.artik.cloud/v1.1/live?authorization=bearer+%s&sdids=%s", accessToken, sdids));
+		System.out.println(String.format("Connecting to: wss://api.artik.cloud/v1.1/live?authorization=bearer+%s", accessToken));
+		
+		System.out.println("With query parameters:");
+		
+		for(String params: queryParams ) {
+			 System.out.println("  "  + params);
+		}
 		
 		// fires the request to make WebSocket connection
-		ws.connect();	
-		
+		ws.connect();
+				
 		System.out.println("Status: " + ws.getConnectionStatus());
 		
 		
 	}
 	
 	private static boolean succeedParseCommand(String args[]) {
-	       if (args.length != EXPECTED_ARGUMENT_NUMBER) {
+	       if (args.length < MIN_EXPECTED_ARGUMENT_NUMBER) {
 	           return false; 
 	       }
+	       
 	       int index = 0;
 	       while (index < args.length) {
 	           String arg = args[index];
-	           System.out.println ("arg is: " + arg);
 	           
 	           if ("-sdids".equals(arg)) {
-	               ++index; // Move to the next argument the value of device id
-	               
-	               System.out.println("sdid set");
+	               ++index; // Move to the next argument, value for parameter
 	               sdids = args[index];
 	           } else if ("-token".equals(arg)) {
-	               ++index; // Move to the next argument the value of device token
-	               
-	               System.out.println("token set");
+	               ++index; // Move to the next argument, value for parameter
 	               accessToken = args[index];
-	           } else if ("-sdid".equals(arg)) {
-	        	   
-	        	   System.out.println("did set");
-	        	   ++index; // Move to the next argument 
+	           } else if ("-device".equals(arg)) {
+	        	   ++index; // Move to the next argument, value for parameter 
 	        	   deviceId = args[index];
 	           } else if ("-uid".equals(arg)) {
-	        	   
-	        	   ++index; // Move to the next argument 
+	        	   ++index; // Move to the next argument, value for parameter 
 	        	   uid = args[index];
+	           } else {
+	        	   	        	   
+	        	   return false;
 	           }
+	           
+	           //store as query param format for printing without the '-' flag prefix
+	           queryParams.add(arg.substring(1) + "=" + args[index]);
 	           
 	           ++index;
 	       }
@@ -144,7 +152,7 @@ public class WebSocketMonitor {
 	           return false;
 	       }
 	       
-	       // must provide one of sdid (device id), sdids, uid must be set
+	       // one of device (device id), sdids (list of device ids), uid (user id) must be set
 	       if (deviceId == null && sdids == null && uid == null) {
 	    	   
 	    	   System.out.println("device id or sdids null");
@@ -155,12 +163,17 @@ public class WebSocketMonitor {
 	   }
 	
 	private static void printUsage() {
-	       System.out.println("Usage: websocket-monitor" + " -sdids YOUR_DEVICE_IDS -token USER_TOKEN");
+	       System.out.println("Usage: java -jar websocket-monitor-x.x.jar" + " -sdids YOUR_DEVICE_ID -token YOUR_USER_TOKEN");
 	      
-	       System.out.println("       -sdids comma delimited containing 1 or more device ids (ie:  id1, id2, id3)");
-	       System.out.println("       -token USER_TOKEN");
+	       System.out.println("One of following flag:");
+	       System.out.println("       -device to filter by single DEVICE_ID");
+	       System.out.println("       -sdids  to filter by multiple DEVICE_IDs, comma delimited (ie:  id1, id2, id3)");
+	       System.out.println("       -uid    to filter all devices of USER_ID");
 	       
-	   }
+	       System.out.println("With token");
+	       System.out.println("       -token USER_TOKEN (required), allows also DEVICE_TOKEN when used with -device flag");
+	       
+	}
 
 }
 

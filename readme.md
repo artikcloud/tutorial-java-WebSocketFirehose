@@ -46,7 +46,7 @@ Consult [An IoT remote control](https://developer.artik.cloud/documentation/tuto
 1. Start and run the following command in the target directory:
 
 ```
-java -jar websocket-monitor-x.x.jar -sdids YOUR_DEVICE_IDs -token YOUR_USER_TOKEN
+java -jar websocket-monitor-x.x.jar -device YOUR_DEVICE_ID -token YOUR_USER_TOKEN
 ```
 
 2. Send messages to your Example Simple Smart Light using the [Online Device Simulator](https://developer.artik.cloud/documentation/tools/web-tools.html#using-the-online-device-simulator).   Simulate the device with following settings:
@@ -59,7 +59,7 @@ java -jar websocket-monitor-x.x.jar -sdids YOUR_DEVICE_IDs -token YOUR_USER_TOKE
 2. In your running sample application you will see the received messages.    Here is the example output:
 
 ```bash
-Connecting to: wss://api.artik.cloud/v1.1/live?authorization=bearer+aa176...&sdids=bb101...
+Connecting to: wss://api.artik.cloud/v1.1/live?authorization=bearer+aa176...&device=bb101...
 Status: CONNECTING ...
 Connection successful with code:[101]
 
@@ -93,7 +93,6 @@ Received message:[class MessageOut {
     mv: 1
 }]
 Received ping with ts:[1507328707969]
-
 ```
 
 3. Stop the simulation so it does not accrue any more data usage.
