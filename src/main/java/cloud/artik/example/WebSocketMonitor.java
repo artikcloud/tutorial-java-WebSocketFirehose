@@ -1,6 +1,5 @@
 package cloud.artik.example;
 
-import cloud.artik.client.ApiException;
 import cloud.artik.model.Acknowledgement;
 import cloud.artik.model.ActionOut;
 import cloud.artik.model.MessageOut;
@@ -46,8 +45,7 @@ public class WebSocketMonitor {
 	// for use when monitoring by device type
 	static String sdtids = null;    //comma delimited string of `device type ID` of interest
 	
-	
-	public static void main(String args[]) throws URISyntaxException, IOException, ApiException {
+	public static void main(String args[]) throws URISyntaxException, IOException {
 		
 		if (!succeedParseCommand(args)) {
             printUsage();
